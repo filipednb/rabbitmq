@@ -1,7 +1,7 @@
 # RabbitMQ
 
 In this repository we'll see how to implement RabbitMQ into a Java Application
-according to [Java Client API](https://www.rabbitmq.com/api-guide.html). But first,
+according to [RabbitMQ Java Client API](https://www.rabbitmq.com/api-guide.html). But first,
 let's talk about concepts and advantages.
 
 ## Message Queue Concept
@@ -14,8 +14,8 @@ a single consumer.
 - The message queues could simplify the development of applications that
 needs to communicate asynchronously with each other. 
 - There are no direct connections between applications, so it promotes 
-the decoupling as seen in common coupled applications that uses HTTP-API 
-communication.
+the decoupling instead of common coupled applications that uses direct 
+HTTP-API communication.
 - Promotes the single responsibility of applications and microservices 
 architecture implementation.
 - Promotes the improving of scalability, as it enable us to decouple 
@@ -36,9 +36,16 @@ systems built with different programming languages.
 
 # Hands on
 
+## Car's coordinates Application
+
+Let's imagine a real scenario.
+Let's pretend that we work in a Uber-like company. We 
+have to develop an application that will expose a high-available API 
+that will receive lots of position coordinates of a lot of cars.
+
 ## Starting a local RabbitMQ broker
 
-First of all, we will start our studies by creating and running a local Docker container 
+First of all, we'll start creating and running a local Docker container 
 with RabbitMQ broker. For this, we'll use an official RabbitMQ 
 Docker Image from [DockerHub](https://hub.docker.com/_/rabbitmq).
 
@@ -46,8 +53,8 @@ Docker Image from [DockerHub](https://hub.docker.com/_/rabbitmq).
 $ docker run -d -p 15672:15672 -p 5672:5672 --name rabbit-local rabbitmq:3-management
 ```
 
-Wait the docker image download, container creation, starting and then validate 
-that's up and running with `docker ps` command.
+Wait Docker download the image, create the container and starting it, 
+then validate that's up and running with `docker ps` command.
 ```shell script
 $ docker ps
 
@@ -57,12 +64,45 @@ ed3bee2a4da7  rabbitmq:3-management  "docker-entrypoint.s…"   About seconds ag
 
 Also, in addition, `rabbitmq:3-management` image tag provides the 
 RabbitMQ Management Plugin interface. Go ahead and type in your
-browser the follow address: `http://localhost:15672`. You will see
-something like this:
+browser the follow address: `http://localhost:15672`. Log in with user `guest`
+and password `guest` too. You will see something like this:
 
 ![](src/main/resources/assets/rabbitAdminInterface.png)
 
 If you saw the interface :point_up: you are ready to go.
+
+For this we will use Spring Boot with Starter Web dependency and 
+RabbitMQ AMQP Java Client.
+Also, I'm using [Lombok plugin](https://projectlombok.org) to prevent us 
+from writing too much code. You can see the dependency details 
+in `build.gradle` file.
+
+```groovy
+dependencies {
+
+    implementation 'com.rabbitmq:amqp-client:5.9.0'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    compileOnly 'org.projectlombok:lombok'
+
+    annotationProcessor 'org.projectlombok:lombok'
+
+}
+```
+
+With RabbitMQ AMQP Client we'll have available key entities
+from AMQP protocol, with additional abstractions for ease of use.
+
+Let's create a application that will produce messages, 
+in this scenario our applications will be responsible 
+to receive coordinates in a API and produce messages to
+the broker, and it will dispatch those messages 
+for interested applications.
+
+First, We'll create a `@Component` that will be responsible
+to create and provide a RabbitMQ connection ready to use. 
+
+
 
 
 
