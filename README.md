@@ -54,7 +54,7 @@ $ docker run -d -p 15672:15672 -p 5672:5672 --name rabbit-local rabbitmq:3-manag
 ```
 
 Wait Docker download the image, create the container and starting it, 
-then validate that's up and running with `docker ps` command.
+then validate it's up and running with `docker ps` command.
 ```shell script
 $ docker ps
 
@@ -65,9 +65,9 @@ ed3bee2a4da7  rabbitmq:3-management  "docker-entrypoint.s…"   About seconds ag
 Also, in addition, `rabbitmq:3-management` image tag provides the 
 RabbitMQ Management Plugin interface. Go ahead and type in your
 browser the follow address: `http://localhost:15672`. Log in with user `guest`
-and password `guest` too. You will see something like this:
+and password `guest`. You will see something like this:
 
-![](src/main/resources/assets/rabbitAdminInterface.png)
+![](rabbitAdminInterface.png)
 
 If you saw the interface :point_up: you are ready to go.
 
@@ -75,7 +75,7 @@ For this we will use Spring Boot with Starter Web dependency and
 RabbitMQ AMQP Java Client.
 Also, I'm using [Lombok plugin](https://projectlombok.org) to prevent us 
 from writing too much code. You can see the dependency details 
-in `build.gradle` file.
+in `producer/build.gradle` file.
 
 ```groovy
 dependencies {
